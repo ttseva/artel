@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { orderAPI, productAPI } from "../../api/api";
 import OrderList from "../../components/orders/OrderList/OrderList";
-import ProductCard from "../../components/products/ProductCard/ProductCard";
+import MasterProducts from "../../components/products/MasterProducts/MasterProducts";
 import "./ProfilePage.css";
 
 const ProfilePage = () => {
@@ -14,6 +14,10 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!user) {
+      return;
+    }
+
     if (!isAuthenticated) {
       navigate("/auth");
       return;
@@ -26,8 +30,11 @@ const ProfilePage = () => {
 
         if (isMaster) {
           const productsRes = await productAPI.getAll();
+          const userId = user.id || user._id;
           const filteredProducts = productsRes.data.filter(
-            (p) => (p.masterId._id || p.masterId) === user.id,
+            (product) =>
+              String(product.masterId?._id || product.masterId) ===
+              String(userId),
           );
           setMyProducts(filteredProducts);
         }
@@ -39,7 +46,7 @@ const ProfilePage = () => {
     };
 
     fetchData();
-  }, [isAuthenticated, navigate, isMaster, user.id]);
+  }, [isAuthenticated, navigate, isMaster, user]);
 
   if (!user) return null;
 
@@ -66,19 +73,10 @@ const ProfilePage = () => {
 
             {isMaster && (
               <div className="my-products-section">
-                <h3>Мои изделия</h3>
-                <div className="mini-products-list">
-                  {myProducts.length > 0 ? (
-                    myProducts.map((product) => (
-                      <div key={product._id} className="mini-product-item">
-                        <span>{product.title}</span>
-                        <span>{product.price} ₽</span>
-                      </div>
-                    ))
-                  ) : (
-                    <p>У вас пока нет изделий</p>
-                  )}
-                </div>
+                <MasterProducts
+                  products={myProducts}
+                  onProductsChange={setMyProducts}
+                />
               </div>
             )}
           </div>

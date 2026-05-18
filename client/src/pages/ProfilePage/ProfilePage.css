@@ -18,7 +18,7 @@
   border: 1px solid #dddddd;
 }
 
-.profile-info h3, .my-products-section h3 {
+.profile-info h3 {
   margin-top: 0;
   margin-bottom: 15px;
   border-bottom: 1px solid #eeeeee;
@@ -28,21 +28,6 @@
 .profile-info p {
   margin: 8px 0;
   font-size: 15px;
-}
-
-.mini-products-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.mini-product-item {
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
-  padding: 8px;
-  background: #f9f9f9;
-  border-radius: 4px;
 }
 
 .orders-section h2 {
