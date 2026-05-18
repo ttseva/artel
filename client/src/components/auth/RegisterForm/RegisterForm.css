@@ -1,0 +1,40 @@
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.register-form h2 {
+  margin: 0 0 1rem 0;
+  text-align: center;
+}
+
+.register-form select {
+  padding: 0.7rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: white;
+}
+
+.register-form select:focus {
+  outline: none;
+  border-color: #4CAF50;
+}
+
+.register-form button {
+  padding: 0.7rem;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.register-form button:disabled {
+  background-color: #ccc;
+}
