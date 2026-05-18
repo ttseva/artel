@@ -1,0 +1,72 @@
+.order-modal {
+  width: 900px;
+  max-width: 95%;
+  background: white;
+  border-radius: 8px;
+  padding: 30px;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.order-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.order-product-preview {
+  display: flex;
+  gap: 15px;
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+.order-product-preview img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.order-product-preview h4 { margin: 0; }
+
+.order-meta p {
+  margin: 10px 0;
+  font-size: 15px;
+}
+
+.status-controls {
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid #eeeeee;
+}
+
+.status-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.status-buttons button {
+  padding: 8px 12px;
+  border: 1px solid #4caf50;
+  background: white;
+  color: #4caf50;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.status-buttons button:hover {
+  background: #4caf50;
+  color: white;
+}
+
+@media (max-width: 800px) {
+  .order-modal-grid {
+    grid-template-columns: 1fr;
+  }
+}
