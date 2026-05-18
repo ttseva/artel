@@ -1,19 +1,10 @@
 import express from "express";
+import { getMessages, sendMessage } from "../controllers/message.controller.js";
+import { authMiddleware } from "../middleware/auth.middleware.js";
 
 const router = express.Router({ mergeParams: true });
 
-router.get("/", (req, res) => {
-  res.json({
-    message: "Получить сообщения заказа",
-    orderId: req.params.id,
-  });
-});
-
-router.post("/", (req, res) => {
-  res.json({
-    message: "Отправить сообщение в заказ",
-    orderId: req.params.id,
-  });
-});
+router.get("/", authMiddleware, getMessages);
+router.post("/", authMiddleware, sendMessage);
 
 export default router;

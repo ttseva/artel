@@ -1,25 +1,20 @@
 import express from "express";
+import {
+  getProducts,
+  getProductById,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+} from "../controllers/product.controller.js";
+import { authMiddleware } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.json({ message: "Каталог" });
-});
+router.get("/", getProducts);
+router.get("/:id", getProductById);
 
-router.post("/", (req, res) => {
-  res.json({ message: "Создать товар" });
-});
-
-router.get("/:id", (req, res) => {
-  res.json({ message: "Получить товар" });
-});
-
-router.put("/:id", (req, res) => {
-  res.json({ message: "Обновить товар" });
-});
-
-router.delete("/:id", (req, res) => {
-  res.json({ message: "Удалить товар" });
-});
+router.post("/", authMiddleware, createProduct);
+router.put("/:id", authMiddleware, updateProduct);
+router.delete("/:id", authMiddleware, deleteProduct);
 
 export default router;

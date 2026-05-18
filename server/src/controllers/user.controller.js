@@ -12,9 +12,9 @@ export const updateUser = async (req, res) => {
 
     if (name) user.name = name;
     if (email) user.email = email;
-    if (password) user.password = password; 
+    if (password) user.password = password;
 
-    await user.save(); 
+    await user.save();
 
     const updatedUser = await User.findById(userId).select("-password");
     res.status(200).json(updatedUser);
