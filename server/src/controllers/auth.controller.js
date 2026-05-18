@@ -6,12 +6,29 @@ export const register = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
+    const allowedRoles = ["buyer", "master"];
+    let assignedRole = "buyer";
+
+    if (role) {
+      if (!allowedRoles.includes(role)) {
+        return res.status(400).json({
+          message: "Invalid role. Available: buyer, master",
+        });
+      }
+      assignedRole = role;
+    }
+
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    const user = await User.create({ name, email, password, role });
+    const user = await User.create({
+      name,
+      email,
+      password,
+      role: assignedRole,
+    });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "30d",
