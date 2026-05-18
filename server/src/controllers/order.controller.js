@@ -3,8 +3,8 @@ import Product from "../models/Product.js";
 
 export const createOrder = async (req, res) => {
   try {
-    const { productId } = req.body;
-    const buyerId = req.user.id;
+    const { productId, comment } = req.body;
+    const buyerId = req.user._id;
 
     const product = await Product.findById(productId);
     if (!product) {
@@ -16,6 +16,7 @@ export const createOrder = async (req, res) => {
       masterId: product.masterId,
       productId,
       status: "created",
+      comment: comment?.trim() || "",
     });
 
     const savedOrder = await newOrder.save();
@@ -27,7 +28,7 @@ export const createOrder = async (req, res) => {
 
 export const getOrders = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user._id;
 
     const orders = await Order.find({
       $or: [{ buyerId: userId }, { masterId: userId }],
@@ -46,7 +47,7 @@ export const updateOrderStatus = async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
-    const userId = req.user.id;
+    const userId = req.user._id;
 
     const order = await Order.findById(id);
 

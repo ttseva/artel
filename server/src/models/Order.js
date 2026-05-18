@@ -23,6 +23,10 @@ const orderSchema = new Schema({
     enum: ["created", "in_progress", "completed", "cancelled"],
     default: "created",
   },
+  comment: {
+    type: String,
+    default: "",
+  },
 }, { timestamps: true });
 
 const Order = mongoose.model("Order", orderSchema);
