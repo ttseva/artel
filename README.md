@@ -113,12 +113,34 @@ password123
 
 ### Docker (альтернативный способ)
 
+В корне проекта `docker-compose.yml` поднимает три сервиса: MongoDB, backend (Node.js) и frontend (nginx + собранный React).
+
+1. Создайте `server/.env`:
+   ```env
+   JWT_SECRET=ваш_секретный_ключ
+   ```
+   `MONGODB_URI` и `PORT` для Docker задаются в `docker-compose.yml`.
+
+2. Запустите из корня проекта:
+   ```bash
+   docker compose up --build
+   ```
 
 После запуска:
-- API: `http://localhost:5000`
 - клиент: `http://localhost:8080`
+- API: `http://localhost:5000`
 
-Также можно собирать образы из папок `client/` и `server/` — там есть отдельные `Dockerfile`.
+Остановка:
+```bash
+docker compose down
+```
+
+Для заполнения БД тестовыми данными (при запущенных контейнерах):
+```bash
+docker compose exec server npm run seed -w server
+```
+
+Образы также можно собрать вручную из корневого `Dockerfile` (`--target server` / `--target client`) или из папок `client/` и `server/`.
 
 ---
 
