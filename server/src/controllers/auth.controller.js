@@ -1,10 +1,19 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { isNonEmptyString, isValidEmail } from "../utils/validation.js";
 
 export const register = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
+
+    if (!isNonEmptyString(name) || !isValidEmail(email) || !isNonEmptyString(password)) {
+      return res.status(400).json({ message: "Name, valid email and password are required" });
+    }
+
+    if (password.trim().length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters" });
+    }
 
     const allowedRoles = ["buyer", "master"];
     let assignedRole = "buyer";
@@ -51,6 +60,11 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    if (!isValidEmail(email) || !isNonEmptyString(password)) {
+      return res.status(400).json({ message: "Valid email and password are required" });
+    }
+
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password" });

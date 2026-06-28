@@ -1,10 +1,15 @@
 import Message from "../models/Message.js";
 import Order from "../models/Order.js";
+import { isNonEmptyString, isValidObjectId } from "../utils/validation.js";
 
 export const getMessages = async (req, res) => {
   try {
     const { id: orderId } = req.params;
     const userId = req.user._id;
+
+    if (!isValidObjectId(orderId)) {
+      return res.status(400).json({ message: "Invalid order id" });
+    }
 
     const order = await Order.findById(orderId);
     if (!order) {
@@ -36,6 +41,14 @@ export const sendMessage = async (req, res) => {
     const { text } = req.body;
     const senderId = req.user._id;
 
+    if (!isValidObjectId(orderId)) {
+      return res.status(400).json({ message: "Invalid order id" });
+    }
+
+    if (!isNonEmptyString(text)) {
+      return res.status(400).json({ message: "Message text is required" });
+    }
+
     const order = await Order.findById(orderId);
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
@@ -53,7 +66,7 @@ export const sendMessage = async (req, res) => {
     const message = await Message.create({
       orderId,
       senderId,
-      text,
+      text: text.trim(),
     });
 
     const populatedMessage = await Message.findById(message._id).populate(

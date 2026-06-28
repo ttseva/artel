@@ -1,4 +1,10 @@
 import Product from "../models/Product.js";
+import {
+  isNonEmptyString,
+  isPositiveNumber,
+  isValidObjectId,
+  PRODUCT_CATEGORIES,
+} from "../utils/validation.js";
 
 export const getProducts = async (req, res) => {
   try {
@@ -15,6 +21,10 @@ export const getProducts = async (req, res) => {
 export const getProductById = async (req, res) => {
   try {
     const { id } = req.params;
+
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({ message: "Invalid product id" });
+    }
 
     const product = await Product.findById(id).populate(
       "masterId",
@@ -42,6 +52,18 @@ export const createProduct = async (req, res) => {
         .json({ message: "Only masters can create products" });
     }
 
+    if (
+      !isNonEmptyString(title) ||
+      !isNonEmptyString(description) ||
+      !isNonEmptyString(image) ||
+      !isPositiveNumber(price) ||
+      !PRODUCT_CATEGORIES.includes(category)
+    ) {
+      return res.status(400).json({
+        message: "Title, description, image, positive price and valid category are required",
+      });
+    }
+
     const product = await Product.create({
       masterId,
       title,
@@ -66,6 +88,30 @@ export const updateProduct = async (req, res) => {
     const { id } = req.params;
     const { title, description, price, image, category } = req.body;
     const userId = req.user._id;
+
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({ message: "Invalid product id" });
+    }
+
+    if (title !== undefined && !isNonEmptyString(title)) {
+      return res.status(400).json({ message: "Title must be a non-empty string" });
+    }
+
+    if (description !== undefined && !isNonEmptyString(description)) {
+      return res.status(400).json({ message: "Description must be a non-empty string" });
+    }
+
+    if (image !== undefined && !isNonEmptyString(image)) {
+      return res.status(400).json({ message: "Image must be a non-empty string" });
+    }
+
+    if (price !== undefined && !isPositiveNumber(price)) {
+      return res.status(400).json({ message: "Price must be a positive number" });
+    }
+
+    if (category !== undefined && !PRODUCT_CATEGORIES.includes(category)) {
+      return res.status(400).json({ message: "Invalid category" });
+    }
 
     const product = await Product.findById(id);
 
@@ -101,6 +147,10 @@ export const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.user._id;
+
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({ message: "Invalid product id" });
+    }
 
     const product = await Product.findById(id);
 

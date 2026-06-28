@@ -1,10 +1,23 @@
 import Order from "../models/Order.js";
 import Product from "../models/Product.js";
+import {
+  isNonEmptyString,
+  isValidObjectId,
+  ORDER_STATUSES,
+} from "../utils/validation.js";
 
 export const createOrder = async (req, res) => {
   try {
     const { productId, comment } = req.body;
     const buyerId = req.user._id;
+
+    if (!isValidObjectId(productId)) {
+      return res.status(400).json({ message: "Valid productId is required" });
+    }
+
+    if (comment !== undefined && comment !== null && typeof comment !== "string") {
+      return res.status(400).json({ message: "Comment must be a string" });
+    }
 
     const product = await Product.findById(productId);
     if (!product) {
@@ -48,6 +61,10 @@ export const getOrder = async (req, res) => {
     const { id } = req.params;
     const userId = req.user._id;
 
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({ message: "Invalid order id" });
+    }
+
     const order = await Order.findById(id)
       .populate("productId", "title price image category")
       .populate("buyerId", "name email")
@@ -73,13 +90,23 @@ export const updateOrderStatus = async (req, res) => {
     const { status } = req.body;
     const userId = req.user._id;
 
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({ message: "Invalid order id" });
+    }
+
+    if (!isNonEmptyString(status) || !ORDER_STATUSES.includes(status)) {
+      return res.status(400).json({
+        message: `Invalid status. Available: ${ORDER_STATUSES.join(", ")}`,
+      });
+    }
+
     const order = await Order.findById(id);
 
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    if (order.masterId.toString() !== userId) {
+    if (order.masterId.toString() !== userId.toString()) {
       return res.status(403).json({ message: "No access to change status" });
     }
 
