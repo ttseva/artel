@@ -60,8 +60,9 @@ MongoDB Database
 ```text
 project/
 │
-├── client/     # frontend-приложение React
-├── server/     # backend-приложение Node.js/Express
+├── client/            # frontend (+ Dockerfile)
+├── server/            # backend (+ Dockerfile)
+├── docker-compose.yml
 └── README.md
 ```
 
@@ -113,7 +114,7 @@ password123
 
 ### Docker (альтернативный способ)
 
-В корне проекта `docker-compose.yml` поднимает три сервиса: MongoDB, backend (Node.js) и frontend (nginx + собранный React).
+В корне проекта `docker-compose.yml` поднимает три сервиса: MongoDB, backend (`server/Dockerfile`) и frontend (`client/Dockerfile`).
 
 1. Создайте `server/.env`:
    ```env
@@ -137,22 +138,24 @@ docker compose down
 
 Для заполнения БД тестовыми данными (при запущенных контейнерах):
 ```bash
-docker compose exec server npm run seed -w server
+docker compose exec server npm run seed
 ```
 
-Образы также можно собрать вручную из корневого `Dockerfile` (`--target server` / `--target client`) или из папок `client/` и `server/`.
+Образы также можно собрать вручную из папок `client/` и `server/`, либо из корневого `Dockerfile` (`--target server` / `--target client`).
 
 ---
 
 ## Тестирование
 
-Проект включает скрипт для фаззинг-тестирования API (проверка устойчивости к некорректным входным данным).
+Проект включает скрипт фаззинг-тестирования API: он генерирует некорректные входные данные, отправляет запросы к основным эндпоинтам и формирует отчёт.
 
 Для запуска тестов (при запущенном сервере):
 ```bash
 cd server
 npm run fuzz
 ```
+
+Результаты сохраняются в `server/fuzz-report.json`, краткая сводка выводится в консоль.
 
 ---
 
